@@ -143,7 +143,12 @@ echo "=========================================="
 echo ""
 
 RESPONSE_TYPE=$(echo "$RESPONSE" | grep -o '"@type"[^,]*' | head -1 | cut -d: -f2 | tr -d ' "')
+# Try to find rejection reason in both formats
 REJECTION_REASON=$(echo "$RESPONSE" | grep -o 'idsc:[A-Z_]*' | head -1)
+if [ -z "$REJECTION_REASON" ]; then
+    # Try URL format
+    REJECTION_REASON=$(echo "$RESPONSE" | grep -o 'https://w3id.org/idsa/code/[A-Z_]*' | head -1 | cut -d/ -f6)
+fi
 
 echo "HTTP Status: $HTTP_CODE"
 echo "Response Type: $RESPONSE_TYPE"
@@ -163,9 +168,10 @@ elif [[ "$REJECTION_REASON" == *"NOT_AUTHENTICATED"* ]]; then
 elif [[ "$REJECTION_REASON" == *"NOT_AUTHORIZED"* ]]; then
     VALID=false
     REASON="Token was validated but insufficient permissions - NOT_AUTHORIZED"
-elif [[ "$REJECTION_REASON" == *"MALFORMED_MESSAGE"* ]]; then
+elif [[ "$REJECTION_REASON" == *"MALFORMED"* ]] || echo "$RESPONSE" | grep -q "MALFORMED_MESSAGE"; then
     # Message format issue - can't determine token validity
     REASON="Message format issue - token validation inconclusive"
+    # This is NOT a token validity issue!
 elif [[ "$HTTP_CODE" == "401" ]]; then
     VALID=false
     REASON="HTTP 401 Unauthorized - token rejected"
