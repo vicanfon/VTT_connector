@@ -16,9 +16,7 @@ After 3+ hours of debugging, **token validation via the connector API is now ful
    - Problem: Connector couldn't reach DAPS JWKS from inside Docker (localhost = container)
    - Solution: Added `extra_hosts: - "localhost:host-gateway"` to connector in docker-compose.yml
 
-3. **SSL Certificate Trust**
-   - Problem: Connector didn't trust self-signed certificates
-   - Solution: Added certificate to truststore (password: "password")
+Note: Initially we thought SSL certificate trust was an issue, but it turns out the connector has SSL verification disabled/relaxed for JWKS fetching, so no certificate changes were needed.
 
 ## How Token Validation Works
 
@@ -138,21 +136,15 @@ When you get `INTERNAL_RECIPIENT_ERROR`, you know:
 
 ### docker-compose.yml
 
+**Only ONE change required:**
+
 ```yaml
 connector:
   extra_hosts:
     - "localhost:host-gateway"  # Allows connector to reach host services
-  environment:
-    - DAPS_KEY_URL=http://omejdn-server:4567/jwks.json
 ```
 
-### Truststore
-
-Added self-signed certificate:
-```bash
-keytool -importcert -file cert/server.crt -alias nginx-cert \
-  -keystore conf/truststore.p12 -storepass password -noprompt
-```
+That's it! No other changes needed.
 
 ## Summary
 
