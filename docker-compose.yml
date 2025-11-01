@@ -115,7 +115,7 @@ services:
       - SERVER_PORT=8081
       - DAPS_URL=https://localhost/auth
       - DAPS_TOKEN_URL=https://localhost/auth/token
-      - DAPS_KEY_URL=http://daps:4567/jwks.json
+      - DAPS_KEY_URL=http://omejdn-server:4567/jwks.json
       - DAPS_INCOMING_DAT_DEFAULT_WELLKNOWN=/jwks.json
       - SERVER_SSLv_KEY-STORE=file:///conf/default-connector-keystore.p12
       - SPRING_DATASOURCE_URL=jdbc:postgresql://connector-database:5432/connectorbdb
