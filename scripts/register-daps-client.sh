@@ -121,7 +121,8 @@ echo ""
 
 if command -v docker &> /dev/null; then
     echo -e "${BLUE}Restarting DAPS container...${NC}"
-    docker compose restart daps
+    # Try both possible service names
+    docker compose restart omejdn-server 2>/dev/null || docker compose restart daps
 
     echo ""
     echo "Waiting for DAPS to start..."
