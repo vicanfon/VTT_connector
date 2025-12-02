@@ -40,8 +40,8 @@ services:
       - COMPONENT_URI=https://__HOST__/broker/
       - COMPONENT_CATALOGURI=https://__HOST__/broker/connectors/
       - JWKS_TRUSTEDHOSTS=__HOST__,daps
-      - DAPS_URL=https://__HOST__/auth
-      - DAPS_JWKS_URL=https://__HOST__/auth/jwks.json
+      - DAPS_URL=http://omejdn-server:4567
+      - DAPS_JWKS_URL=http://omejdn-server:4567/jwks.json
     expose:
       - "8080" # Internal communication on port 8080
     networks:
@@ -84,7 +84,7 @@ services:
     restart: unless-stopped
     environment:
       - OIDC_ISSUER=https://__HOST__/auth/
-      - API_URL=https://__HOST__/auth/api/v1
+      - API_URL=http://omejdn-server:4567/api/v1
       - CLIENT_ID=adminUI
     networks:
       - local
@@ -113,9 +113,9 @@ services:
     environment:
       - CONFIGURATION_PATH=/config/config.json
       - SERVER_PORT=8081
-      - DAPS_URL=https://__HOST__/auth
-      - DAPS_TOKEN_URL=https://__HOST__/auth/token
-      - DAPS_KEY_URL=https://__HOST__/auth/jwks.json
+      - DAPS_URL=http://omejdn-server:4567
+      - DAPS_TOKEN_URL=http://omejdn-server:4567/token
+      - DAPS_KEY_URL=http://omejdn-server:4567/jwks.json
       - DAPS_INCOMING_DAT_DEFAULT_WELLKNOWN=/jwks.json
       - SERVER_SSLv_KEY-STORE=file:///conf/default-connector-keystore.p12
       - SPRING_DATASOURCE_URL=jdbc:postgresql://connector-database:5432/connectorbdb
@@ -165,7 +165,7 @@ services:
       - DJANGO_DB_NAME=db.sqlite3
       - DJANGO_LANGUAGE_CODE=en-us
       - DJANGO_TIME_ZONE=UTC
-      - BASE_URL=https://__HOST__/connector-registration/register-connector
+      - BASE_URL=http://connector-registration:5001/register-connector
     networks:
       - local
 
